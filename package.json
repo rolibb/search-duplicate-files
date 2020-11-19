@@ -1,0 +1,21 @@
+{
+  "name": "duplicateservice",
+  "version": "1.0.0",
+  "description": "search for duplicates files",
+  "main": "fileInfo.js",
+  "scripts": {
+    "test": "jest",
+    "service": "node server.js"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "rolibb",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
