@@ -4,8 +4,12 @@ const app = express();
 const fileinfo = require("./fileinfo");
 
 app.get("/duplicateFiles", (req, res) => {
-  const duplicateFiles = fileinfo.getDuplicateFiles("./files");
-  res.json(duplicateFiles);
+  fileinfo.getDuplicateFiles("./files", (error, data) => {
+    if (error) {
+      res.status(500).json(error);
+    }
+    res.json(data);
+  });
 });
 
 app.listen(3000, () => {

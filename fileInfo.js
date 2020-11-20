@@ -1,32 +1,20 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const hash = crypto.createHash("md5");
-const DIR = "./files";
-// const DIR = "/";
+const async = require("async");
 
-const getHashFile = (filePath) => {
-  // const stream = fs.createReadStream(filePath);
+const getHashFile = (filePath, cb) => {
+  const stream = fs.createReadStream(filePath);
+  const hash = crypto.createHash("sha1");
 
-  // stream.on("data", function (data) {
-  //   hash.update(data, "utf8");
-  // });
+  stream.on("data", function (data) {
+    hash.update(data, "utf8");
+  });
 
-  // stream.on("end", function () {
-  //   const res = hash.digest("hex"); // 34f7a3113803f8ed3b8fd7ce5656ebec
-  //   console.log(res);
-  // });
-
-  let res = "";
-
-  try {
-    const data = fs.readFileSync(filePath);
-    res = crypto.createHash("sha1").update(data, "utf8").digest("hex");
-  } catch (err) {
-    console.error(err);
-  }
-
-  return res;
+  stream.on("end", function () {
+    const res = hash.digest("hex");
+    cb(null, res);
+  });
 };
 
 const getAllFiles = (dirPath, arrayOfFiles) => {
@@ -44,41 +32,44 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
   return arrayOfFiles;
 };
 
-const getFilesHashes = (dir) => {
+const getFilesHashes = (dir, cb) => {
   let filesHashes = new Map();
-  try {
-    const files = getAllFiles(dir);
-    files.map((file) => {
-      const hashFile = getHashFile(file);
-      const files = filesHashes.get(hashFile);
-      if (files && files.length > 0) {
-        filesHashes.set(hashFile, [...files, file]);
-      } else {
-        filesHashes.set(hashFile, [file]);
+  const files = getAllFiles(dir);
+  async.map(
+    files,
+    (file, cbx) => {
+      const hashFile = getHashFile(file, (err, fileHash) => {
+        if (err) {
+          cbx(err);
+        }
+
+        const files = filesHashes.get(fileHash);
+        if (files && files.length > 0) {
+          filesHashes.set(fileHash, [...files, file]);
+        } else {
+          filesHashes.set(fileHash, [file]);
+        }
+        cbx();
+      });
+    },
+    (err) => {
+      cb(null, filesHashes);
+    }
+  );
+};
+
+const getDuplicateFiles = (dir, cb) => {
+  getFilesHashes(dir, (err, filesHashes) => {
+    let res = [];
+    const filesNames = Array.from(filesHashes.values());
+    filesNames.map((files) => {
+      if (files.length > 1) {
+        res = [...res, ...files];
       }
     });
-  } catch (err) {
-    console.error(err);
-  }
-  // console.log(filesHashes);
-  return filesHashes;
-};
-
-const getDuplicateFiles = (dir) => {
-  const filesHashes = getFilesHashes(dir);
-
-  let res = [];
-  const filesNames = Array.from(filesHashes.values());
-  filesNames.map((files) => {
-    if (files.length > 1) {
-      res = [...res, ...files];
-    }
+    cb(null, res);
   });
-
-  return res;
 };
-
-getDuplicateFiles("./files");
 
 exports.getHashFile = getHashFile;
 exports.getAllFiles = getAllFiles;

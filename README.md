@@ -6,7 +6,7 @@ Please send the path where you want to search duplicate files
 
 ```javascript
 const fileinfo = require("./fileinfo");
-const duplicateFiles = fileinfo.getDuplicateFiles("./files");
+fileinfo.getDuplicateFiles("./files", (err, duplicateFiles) => {});
 ```
 
 ## How to run service
