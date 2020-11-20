@@ -1,4 +1,4 @@
-const fileinfo = require("./fileinfo");
+const fileInfo = require("./fileInfo");
 
 test("get Hash file to have the signature using sha1 of the file ./files/test.txt", (done) => {
   function callback(error, data) {
@@ -8,7 +8,7 @@ test("get Hash file to have the signature using sha1 of the file ./files/test.tx
     expect(data).toEqual("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3");
     done();
   }
-  fileinfo.getHashFile("./files/test.txt", callback);
+  fileInfo.getHashFile("./files/test.txt", callback);
 });
 
 test("get files hashes ", (done) => {
@@ -31,7 +31,7 @@ test("get files hashes ", (done) => {
     done();
   }
 
-  fileinfo.getFilesHashes("./files", callback);
+  fileInfo.getFilesHashes("./files", callback);
 });
 
 test("get duplicate files", (done) => {
@@ -50,5 +50,5 @@ test("get duplicate files", (done) => {
     done();
   }
 
-  fileinfo.getDuplicateFiles("./files", callback);
+  fileInfo.getDuplicateFiles("./files", callback);
 });

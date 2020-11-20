@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 
-const fileinfo = require("./fileinfo");
+const fileInfo = require("./fileInfo");
 
 app.get("/duplicateFiles", (req, res) => {
-  fileinfo.getDuplicateFiles("./files", (error, data) => {
+  fileInfo.getDuplicateFiles("./files", (error, data) => {
     if (error) {
       res.status(500).json(error);
     }

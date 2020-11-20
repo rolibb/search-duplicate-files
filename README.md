@@ -1,5 +1,7 @@
 # Search Duplicate Files
 
+The key aspects of this challenge is the number of the files and size, for this I used streams of Nodejs to handle big files without need a lot of memory RAM.
+
 ## How to use
 
 Please send the path where you want to search duplicate files
